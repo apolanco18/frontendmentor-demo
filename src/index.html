@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  
+  <title>Frontend Mentor | Todo app</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <style>
+    .attribution { font-size: 18px; text-align: center; }
+
+    @font-face { font-family: JosSans; src url('https://fonts.google.com/specimen/Josefin+Sans');}
+
+
+    html {
+      box-sizing: border-box;
+      font-size: 18px !important;
+      font-family: JosSans !important;
+
+    }
+
+    *, *::before, *::after {
+      box-sizing: inherit;
+      margin: 0;
+      padding: 0;
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #333;
+    }
+
+    svg {
+      width: 64px;
+      height: 64px;
+    }
+
+    .smaller-text-size {
+      font-size:12px;
+    }
+
+    .title {
+      color: hsl(0, 0%, 98%);
+    }
+
+    .title-light {
+      color: hsl(235, 19%, 35%);
+    }
+    .js-todo-background {
+      background-color: hsl(235, 21%, 11%);
+    }
+    
+    .js-todo-background-light {
+      background-color: hsl(0, 0%, 98%);
+    }
+
+    .js-todo-input {
+      background-color: hsl(235, 24%, 19%);
+      color: hsl(234, 39%, 85%);
+    }
+
+    .js-todo-input-light {
+      background-color: hsl(236, 33%, 92%);
+      color: hsl(235, 19%, 35%);
+    }
+
+    .todo-list {
+      padding-left:0;
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .todo-item {
+      color: hsl(234, 39%, 85%);
+      padding: 10px 17px 10px 17px;
+      border-width: 0 0 1px 0;
+      border-color: hsl(234, 39%, 85%);
+      border-style: solid;
+      background-color: hsl(235, 24%, 19%);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .todo-item-light {
+      background-color: hsl(236, 33%, 92%);
+      color: hsl(235, 19%, 35%);
+    }
+
+    .todo-item:first-child {
+      border-radius: 10px 10px 0 0;
+    }
+
+    .todo-item:last-child {
+      border-radius: 0 0 10px 10px;
+      border-width: 0;
+    }
+
+    .todo-item span {
+      flex-grow: 1;
+      margin-left: 10px;
+      margin-right: 10px;
+      font-size: 22px;
+    }
+
+    .done span {
+      text-decoration: line-through;
+    }
+
+    input[type="checkbox"] {
+      display: none;
+    }
+
+    .tick {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-image: linear-gradient(hsl(192, 100%, 67%),hsl(280, 87%, 65%));
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .tick::before {
+      content: '✓';
+      color:white;
+      background-image: none;
+      font-size: 20px;
+      display: none;
+    }
+
+    .done .tick::before {
+      display: inline;
+    }
+
+    .delete-todo {
+      border: none;
+      background-color: transparent;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .delete-todo svg {
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+    }
+
+    
+    .todo-list-buttons {
+      color: hsl(234, 39%, 85%);
+      padding: 10px 5px 10px 5px;
+      background-color: hsl(235, 24%, 19%);
+      width: 100%;
+      text-align:center;
+      align-items: center;
+      justify-content: space-between;
+
+    }
+
+    .todo-list-buttons-light {
+      background-color: hsl(236, 33%, 92%);
+      color: hsl(235, 19%, 35%);
+    }
+
+    .filter-button-active {
+      color: hsl(220, 98%, 61%);
+    }
+
+    .list-buttons-parent {
+      padding: 0 0 0 0;
+    }
+
+
+
+
+    
+  </style>
+</head>
+
+<body class="js-todo-background">
+  <div class="container">
+
+    <div class="row justify-content-center" >
+      <div class="col-7">
+        <h1 class="title">TODO</h1>
+      </div> 
+      <a onclick="toggleColorMode()" class="col-1" style="padding-top:12px;" id="icon-sun">
+        <span class="">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"><path fill="#FFF" fill-rule="evenodd" d="M13 21a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm-5.657-2.343a1 1 0 010 1.414l-2.121 2.121a1 1 0 01-1.414-1.414l2.12-2.121a1 1 0 011.415 0zm12.728 0l2.121 2.121a1 1 0 01-1.414 1.414l-2.121-2.12a1 1 0 011.414-1.415zM13 8a5 5 0 110 10 5 5 0 010-10zm12 4a1 1 0 110 2h-3a1 1 0 110-2h3zM4 12a1 1 0 110 2H1a1 1 0 110-2h3zm18.192-8.192a1 1 0 010 1.414l-2.12 2.121a1 1 0 01-1.415-1.414l2.121-2.121a1 1 0 011.414 0zm-16.97 0l2.121 2.12A1 1 0 015.93 7.344L3.808 5.222a1 1 0 011.414-1.414zM13 0a1 1 0 011 1v3a1 1 0 11-2 0V1a1 1 0 011-1z"/></svg>
+        </span>
+      </a> 
+
+      <a onclick="toggleColorMode()" class="col-1" style="padding-top:12px; display:none;" id="icon-moon">
+        <span class="">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"><path fill="hsl(235, 24%, 19%)" fill-rule="evenodd" d="M13 0c.81 0 1.603.074 2.373.216C10.593 1.199 7 5.43 7 10.5 7 16.299 11.701 21 17.5 21c2.996 0 5.7-1.255 7.613-3.268C23.22 22.572 18.51 26 13 26 5.82 26 0 20.18 0 13S5.82 0 13 0z"/></svg>
+        </span>
+      </a> 
+    </div>
+
+    <br>
+
+    <div class="row justify-content-center" >
+      <div class="col-8">
+        <div class="input-group">
+          <form class="js-form">
+            <input autofocus type="text" aria-label="Enter a new todo item" placeholder="Create a new todo " class="js-todo-input">
+          </form>
+        </div>
+
+        <br>
+
+        <ul class="todo-list js-todo-list"></ul>
+
+        <br>
+        <div class="row justify-content-center" >
+          
+          <div class="col-3 list-buttons-parent">
+            <div class = "todo-list-buttons">
+              <text id="completed-count" class="smaller-text-size">No Items Left</text>
+            </div>
+          </div>
+
+          <div class="col-2 list-buttons-parent">
+            <div class = "todo-list-buttons">
+              <a onclick="filterTodoList('all-filter')">
+                <text id="all-filter" class="smaller-text-size filter-button">All</text>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-2 list-buttons-parent">
+            <div class = "todo-list-buttons">
+              <a onclick="filterTodoList('active-filter')">
+                <text id="active-filter" class="smaller-text-size filter-button">Active</text>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-2 list-buttons-parent">
+            <div class = "todo-list-buttons">
+              <a onclick="filterTodoList('completed-filter')">
+                <text id="completed-filter" class="smaller-text-size filter-button">Completed</text>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-3 list-buttons-parent">
+            <div class = "todo-list-buttons">
+              <a onclick="deleteAll()">
+                <text class="smaller-text-size ">Clear Completed</text>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <br>
+    <br>
+  
+
+
+  </div>
+
+  <svg>
+    <defs>
+      <symbol id="delete-icon" xmlns="http://www.w3.org/2000/svg" width="17" height="17"><path fill="#494C6B" fill-rule="evenodd" d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+    Coded by <a href="#">Ancelmo Polanco</a>.
+  </div>
+
+  <script>
+
+
+    let todoItems = [];
+
+    function renderTodo(todo) {
+
+      const list = document.querySelector('.js-todo-list');
+
+      const item = document.querySelector(`[data-key='${todo.id}']`);
+
+      if (todo.deleted) {
+
+        item.remove();
+        return;
+      }
+
+      const isChecked = todo.check ? 'done' : '';
+
+      const node = document.createElement("li");
+
+      node.setAttribute('class', `todo-item ${isChecked}`);
+
+      node.setAttribute('data-key', todo.id);
+
+      node.innerHTML = `
+        <input id="${todo.id}" type="checkbox"/>
+        <label for="${todo.id}" class="tick js-tick"></label>
+        <span>${todo.text}</span>
+        <button class="delete-todo js-delete-todo">
+        <svg><use href="#delete-icon"></use></svg>
+        </button>
+      `;
+
+      var moonButton = document.getElementById("icon-moon");
+      if(moonButton.style.display === "block"){
+        node.classList.toggle('todo-item-light');
+      }
+    
+
+      if (item) {
+        list.replaceChild(node, item);
+      } else {
+        list.append(node);
+      }
+
+      filterTodoList('all-filter');
+    }
+
+    filterValues = []
+    const all = {
+      id: 'all-filter',
+      checked:false,
+    };
+
+    const active = {
+      id: 'active-filter',
+      checked:false,
+    };
+
+    const completed = {
+      id: 'completed-filter',
+      checked:false,
+    };
+
+    filterValues.push(all);
+    filterValues.push(active);
+    filterValues.push(completed);
+
+    function filterAll(){
+      const filterButtons = document.querySelectorAll('.todo-item');
+      
+      filterButtons.forEach(function(element) {
+         element.style.display = "flex"; 
+      })
+    }
+
+    function filterActiveOrCompleted(val){
+      const filterButtons = document.querySelectorAll('.todo-item');
+      
+      const check = (val == true) ? true : false;
+
+
+      filterButtons.forEach(function(element) {
+        key = element.getAttribute('data-key')
+        const index = todoItems.findIndex(item => item.id == key);
+
+        if (todoItems[index].check == check) element.style.display = "none";
+        else element.style.display = "flex";
+
+      })
+    }
+    function filterBuffer(val){
+      switch (val){
+        case 'all-filter':
+          filterAll();
+          break;
+        case 'active-filter':
+          filterActiveOrCompleted(true);
+          break;
+        case 'completed-filter':
+          filterActiveOrCompleted(false);
+          break;
+      }
+    }
+
+    function filterTodoList(val){
+        
+        const filterList = document.querySelectorAll('.filter-button');
+
+        filterList.forEach(function(element) {
+            const index = filterValues.findIndex(item => item.id == element.id);
+            
+            if(element.id == val){
+
+              if(filterValues[index].checked == false) {
+                element.classList.toggle('filter-button-active');
+                filterValues[index].checked = !filterValues[index].checked;
+                filterBuffer(val);
+
+              }
+              
+            }
+            else{
+              if(filterValues[index].checked == true){
+                element.classList.toggle('filter-button-active');
+                filterValues[index].checked = !filterValues[index].checked;
+              }
+            }
+        })
+    }
+
+    function addTodo(text) {
+      const todo = {
+        text,
+        check: false,
+        id: Date.now(),
+      };
+
+      todoItems.push(todo);
+      renderTodo(todo);
+
+    }
+
+
+    function toggleColorMode(){
+      const input = document.querySelector('.js-todo-input');
+      const background = document.querySelector('.js-todo-background');
+
+      input.classList.toggle("js-todo-input-light");
+      background.classList.toggle("js-todo-background-light");
+
+      var sunButton = document.getElementById("icon-sun");
+      sunButton.style.display === "none" ? sunButton.style.display = "block" : sunButton.style.display = "none";
+    
+      var moonButton = document.getElementById("icon-moon");
+      moonButton.style.display === "none" ? moonButton.style.display = "block" : moonButton.style.display = "none";
+    
+      const title = document.querySelector('.title');
+      title.classList.toggle("title-light");
+
+      const filterButtons = document.querySelectorAll('.todo-list-buttons');
+      filterButtons.forEach(function(element) {
+        element.classList.toggle('todo-list-buttons-light');
+      })
+
+      const todoItemList = document.querySelectorAll('.todo-item');
+
+      todoItemList.forEach(function(element) {
+        element.classList.toggle("todo-item-light");
+      })
+    }
+
+    const form = document.querySelector('.js-form');
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const input = document.querySelector('.js-todo-input');
+
+      const text = input.value.trim();
+      if (text !== '') {
+        addTodo(text);
+        checkTotalComplete();
+        input.value = '';
+        input.focus();
+      }
+    });
+
+    const list = document.querySelector('.js-todo-list');
+    list.addEventListener('click', event => {
+      if (event.target.classList.contains('js-tick')) {
+        const itemKey = event.target.parentElement.dataset.key;
+        toggleDone(itemKey);
+      }
+
+      if(event.target.classList.contains('js-delete-todo')) {
+        const itemKey = event.target.parentElement.dataset.key;
+        deleteTodo(itemKey);
+      }
+
+      checkTotalComplete();
+    });
+
+    function toggleDone(key) {
+      
+      const index = todoItems.findIndex(item => item.id === Number(key));
+      
+      todoItems[index].check = !todoItems[index].check;
+      renderTodo(todoItems[index]);
+    }
+    function checkTotalComplete(){
+
+      var total = 0;
+
+      for (var i = 0; i<todoItems.length; i++){
+        if(todoItems[i].check != true){
+          total++;
+        }
+      }
+      console.log(total)
+      var itemsLeftElem = document.getElementById("completed-count");
+
+      (total == 0) ? itemsLeftElem.innerHTML = "No Items Left" : itemsLeftElem.innerHTML = total + " Items Left"
+    }
+
+    function deleteAll() {
+      const allItems = document.querySelectorAll('.todo-item');
+
+      allItems.forEach(function(element) {
+        key = element.getAttribute('data-key');
+        const index = todoItems.findIndex(item => item.id == key);
+
+        if (todoItems[index].check == true) deleteTodo(key + "");
+
+      })
+    }
+    
+    function deleteTodo(key) {
+
+      const index = todoItems.findIndex(item => item.id === Number(key));
+
+      const todo = {
+        deleted:true,
+        ...todoItems[index]
+      };
+
+      todoItems = todoItems.filter(item => item.id !== Number(key));
+      renderTodo(todo);
+    }
+    
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</body>
+</html>
